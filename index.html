@@ -5,7 +5,11 @@
 <h2>get bud</h2>
 
 <p>Please</p>
-
+    
+<button type="button" onclick="saveBudget_confirm()">SAVE MANUALLY</button>
+<button type="button" onclick="loadBudget()">LOAD</button>
+<button type="button" onclick="addIncome()">ADD</button>
+    
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
 .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
@@ -24,48 +28,23 @@
     <th class="tg-yw4l">Type</th>
     <th class="tg-yw4l">Value</th>
   </tr>
-  <tr>
-    <td class="tg-baqh"><input id="imp_0" type="number" style="width: 2em"></td>
-    <td class="tg-baqh"><input id="category_0" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="entry_0" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="depth_0" type="number" style="width: 4em"></td>
-    <td class="tg-baqh"><select id="type_0"><option>const</option>
-                                                   <option>%</option>
-                                                   <option>once</option>
-                                                       </select></td>
-    <td class="tg-baqh"><input id="val_0" type="number" style="width: 4em"></td>
-  </tr>
-  <tr>
-    <td class="tg-baqh"><input id="imp_1" type="number" style="width: 2em"></td>
-    <td class="tg-baqh"><input id="category_1" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="entry_1" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="depth_1" type="number" style="width: 4em"></td>
-    <td class="tg-baqh"><select id="type_1"><option>const</option>
-                                                   <option>%</option>
-                                                   <option>once</option>
-                                                       </select></td>
-    <td class="tg-baqh"><input id="val_1" type="number" style="width: 4em"></td>
-  </tr>
-  <tr>
-    <td class="tg-baqh"><input id="imp_2" type="number" style="width: 2em"></td>
-    <td class="tg-baqh"><input id="category_2" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="entry_2" type="text" style="width: 10em"></td>
-    <td class="tg-baqh"><input id="depth_2" type="number" style="width: 4em"></td>
-    <td class="tg-baqh"><select id="type_2"><option>const</option>
-                                                   <option>%</option>
-                                                   <option>once</option>
-                                                       </select></td>
-    <td class="tg-baqh"><input id="val_2" type="number" style="width: 4em"></td>
-  </tr>
+    <template id="raw_tmplt">
+        <tr>
+            <td class="tg-baqh"><input type="number" style="width: 3em"></td>
+            <td class="tg-baqh"><input type="text" style="width: 10em"></td>
+            <td class="tg-baqh"><input type="text" style="width: 10em"></td>
+            <td class="tg-baqh"><input type="number" style="width: 4em"></td>
+            <td class="tg-baqh"><select><option>const</option>
+                                                           <option>%</option>
+                                                           <option>once</option>
+                                                               </select></td>
+            <td class="tg-baqh"><input type="number" style="width: 4em"></td>
+        </tr>
+    </template>
 </table>
 
 <!-- <textarea id="numb" rows="15" cols="50"></textarea> -->
 <hr>
-
-<button type="button" onclick="updateBudget()">UPDATE MANUALLY</button>
-<button type="button" onclick="loadBudget()">LOAD</button>
-
-<p id="demo"></p>
 
 <script src="budget.js" type="text/javascript"></script>
 
