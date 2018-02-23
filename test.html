@@ -1,16 +1,23 @@
-const N_ENTRIES = 20;
-BudgetObj = {    
-                "temp_val" : 0,
-                "entry_number" : 0,
-                "entry" : [ ]
-                // 
-                };
+<!DOCTYPE html>
+<html>
+<body>
 
-function isFull() {
-    var val = parseFloat(this.val);
-    var depth = parseFloat(this.depth);
-    return (val >= depth) && (this.type !== "%");
-}
+<h2>test</h2>
+
+<p id = "out"> </p>
+<hr>
+    
+<!--<button type="button" onclick="">SAVE MANUALLY</button>-->
+
+
+
+<script>
+    const N_ENTRIES = 20;
+    BudgetObj = {
+                     "temp_val" : 0,
+                     "entry" : [ ]
+                    // 
+                    };
 
 function EntryObj() {
                 this.imp = null;
@@ -19,8 +26,14 @@ function EntryObj() {
                 this.depth = null;
                 this.type = null;
                 this.val = null;
-           };
-
+    
+                this.isFull = function() {
+                   return 0;//( (this.val >= this.depth) && (this.type == "const") )
+                };
+           }
+//EntryObj.prototype.isFull = function() {
+//    return 0;
+//};
 
 
 //Making a table HTML
@@ -45,8 +58,6 @@ function saveBudget() {
     
    // alert(JSON.stringify(BudgetObj.entry[0]))
     
-    BudgetObj.entry_number = 0;
-    
     for (let i=0; i<N_ENTRIES; i++){ 
         
         //var BudgetObj.entry[i] = {};
@@ -58,13 +69,11 @@ function saveBudget() {
         }
         
        // if (EntryObj.imp != "")
-        BudgetObj.entry[i] = entry;
-        BudgetObj.entry_number++;
+          BudgetObj.entry[i] = entry;
         //alert(JSON.stringify(BudgetObj.entry[i]))
        
     }
     
-    //alert(BudgetObj.entry_number)
     //alert(JSON.stringify(BudgetObj.entry[0].isFull())) 
     //alert(JSON.stringify(BudgetObj))
     let BudgetJSON = JSON.stringify(BudgetObj)
@@ -87,19 +96,20 @@ function loadBudget(){
             document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
         }
     }
-    //alert(JSON.stringify(BudgetObj.entry[0].isFull()))
+    alert(JSON.stringify(BudgetObj.entry[0].isFull()))
 }
 
 
 function addIncome(){
-    for (var i=0; i<BudgetObj.entry_number; i++) {
-//    for (var i=0; i<1; i++) {
-        var entry = BudgetObj.entry[i];
-        entry.isFull = isFull;
-        
-        
-        alert(entry.isFull())
-    }    
+    //TODO define functions BudgetObj.entry.foo right in addIncome()
+    
 }
 
 
+
+    document.getElementById("out").innerHTML = "fffkkf"
+
+</script>
+
+</body>
+</html> 
