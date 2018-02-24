@@ -27,8 +27,12 @@ for (var i=0; i<N_ENTRIES; i++) {
     div[2].id = "showing_entry_" + i
     div[3].id = "showing_depth_" + i
     div[4].id = "showing_val_" + i
+    var sinput = clone.querySelectorAll('input')
+    sinput[0].id = "showing_spend_" + i
     showing_template.parentNode.appendChild(clone)
 }
+
+loadBudget()
 
 
 BudgetObj = {    
@@ -97,22 +101,39 @@ function saveBudget_confirm(){
 
 function loadBudget(){
     let BudgetJSON = localStorage.getItem("budget.json");
-    BudgetObj = JSON.parse(BudgetJSON);
-    showBudget()
+    if (BudgetJSON !== undefined) {
+        BudgetObj = JSON.parse(BudgetJSON);
+        showBudget()
+    }
 };
 
-function showBudget(){    
+function showBudget(){  
+    //Previous rest if it exists
+    if (BudgetObj.rest != 0)
+        document.getElementById("rest").innerHTML = 
+            "   Previous rest = " + Math.round(BudgetObj.rest) 
+            + "  <button type=\"button\" onclick=\"deleteRest()\">delete</button>"
+    else document.getElementById("rest").innerHTML = ""
+    
+    //Editing Table
     for (var i=0; i<BudgetObj.entry_number; i++) 
             for (var column in BudgetObj.entry[i]) 
                 if (!(typeof BudgetObj.entry[i][column] === "function")) 
                     document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
                     
-
-    for (var i=0; i<BudgetObj.entry_number; i++) 
+    //Showing Table
+    for (var i=0; i<BudgetObj.entry_number; i++) {
+            var entry = BudgetObj.entry[i];
             for (var j in SHOWING_TABLE_COLUMNS) {
                 var id = "showing_" + SHOWING_TABLE_COLUMNS[j] + "_" + i
-                document.getElementById(id).innerHTML = BudgetObj.entry[i][SHOWING_TABLE_COLUMNS[j]]
-            }    
+                document.getElementById(id).innerHTML = entry[SHOWING_TABLE_COLUMNS[j]]
+            } 
+            if (entry.type === "%") 
+                document.getElementById("showing_depth_" + i).innerHTML += "%"
+//            if (entry.isFull) 
+//                document.getElementById("showing_depth_" + i).className = "green"
+        
+    }
     
 };
 
@@ -140,11 +161,39 @@ for (var i=0; i<BudgetObj.entry_number; i++) {
         
         rest = entry.fillEntry(rest); //Main evaluating operation
     } 
-    BudgetObj.rest = rest;
-    if (rest > 0) 
-        alert("There are some funds rest!\n" + "rest = " + rest + "\nThey've been saved and will be added to next Income")
+    BudgetObj.rest = rest; 
+    
     showBudget()
+    saveBudget()
+    if (rest > 0) 
+        alert("There are some funds rest!\n" + "rest = " + Math.round(rest) + "\nThey've been saved and will be added to next Income")
 };
+
+function spendButton(){
+    saveBudget()
+    for (var i=0; i<BudgetObj.entry_number; i++) {
+        var entry = BudgetObj.entry[i];
+        var spending = parseFloat(document.getElementById("showing_spend_" + i).value);
+        document.getElementById("showing_spend_" + i).value = "";
+        if (isNaN(spending))
+            spending = 0;
+        document.getElementById("val_" + i).value -= spending;
+        if (document.getElementById("val_" + i).value < 0)
+            overspent = true;
+    }
+    saveBudget()
+    showBudget()
+    if (overspent) alert("Overspent in some entries!!!")
+};
+
+function deleteRest() {
+//    alert(7)
+    BudgetObj.rest = 0;
+    saveBudget()
+//    loadBudget()
+    showBudget()
+}
+
 
 
 
