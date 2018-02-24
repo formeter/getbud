@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-
-<h2>get bud</h2>
-
-<p>Please</p>
-    
-<button type="button" onclick="saveBudget_confirm()">SAVE MANUALLY</button>
-<button type="button" onclick="loadBudget()">LOAD</button>
-<button type="button" onclick="addIncomeButton()">ADD INCOME</button>
-<input type="number" id="income" style="width: 4em">
-<hr>
     
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
@@ -20,7 +10,50 @@
 .tg .tg-baqh{text-align:center;vertical-align:top}
 .tg .tg-yw4l{vertical-align:top}
 </style>
+
+<h2>get bud</h2>
+
+<p>Please</p>
     
+
+<table class="tg">
+  <tr>      
+    <th class="tg-nrw1">i</th>
+    <th class="tg-yw4l">Category</th>
+    <th class="tg-yw4l">Entry</th>
+    <th class="tg-yw4l">Depth</th>
+    <th class="tg-yw4l">Value</th>
+  </tr>
+<!--
+    <template id="showing_table_tmplt">
+        <tr>
+            <td class="tg-baqh"><p></p></td>
+            <td class="tg-baqh"><p></p></td>
+            <td class="tg-baqh"><p></p></td>
+            <td class="tg-baqh"><p></p></td>
+            <td class="tg-baqh"><p></p></td>
+        </tr>
+    </template>
+-->
+     <template id="showing_table_tmplt">
+        <tr>
+            <td><div  style="height: 10px;"></div></td>
+            <td><div  style="height: 10px;"></div></td>
+            <td><div  style="height: 10px;"></div></td>
+            <td><div  style="height: 10px;"></div></td>
+            <td><div  style="height: 10px;"></div></td>
+        </tr>
+    </template>
+</table>
+
+<hr>   
+<button type="button" onclick="saveBudget_confirm()">SAVE MANUALLY</button>
+<button type="button" onclick="loadBudget()">LOAD</button>
+<button type="button" onclick="addIncomeButton()">ADD INCOME</button>
+<input type="number" id="income" style="width: 4em">
+<hr>
+    
+
 <table class="tg">
   <tr>      
     <th class="tg-nrw1">import<br>ance</th>
@@ -30,7 +63,7 @@
     <th class="tg-yw4l">Type</th>
     <th class="tg-yw4l">Value</th>
   </tr>
-    <template id="raw_tmplt">
+    <template id="editing_table_tmplt">
         <tr>
             <td class="tg-baqh"><input type="number" style="width: 3em"></td>
             <td class="tg-baqh"><input type="text" style="width: 10em"></td>

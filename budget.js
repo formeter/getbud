@@ -1,6 +1,7 @@
 const N_ENTRIES = 20;
+const SHOWING_TABLE_COLUMNS = ["category", "entry", "depth", "val"];
 //Making a table HTML
-var template = document.querySelector('#raw_tmplt')
+var template = document.querySelector('#editing_table_tmplt')
 for (var i=0; i<N_ENTRIES; i++) {
     var clone = template.content.cloneNode(true)
     var input = clone.querySelectorAll('input')
@@ -15,7 +16,20 @@ for (var i=0; i<N_ENTRIES; i++) {
     select[0].id = "type_" + i
     template.parentNode.appendChild(clone)
 }
-document.getElementById("income").value = 0;
+
+var showing_template = document.querySelector('#showing_table_tmplt')
+for (var i=0; i<N_ENTRIES; i++) {
+    var clone = showing_template.content.cloneNode(true)
+    var div = clone.querySelectorAll('div')
+    div[0].id = "showing_imp_" + i
+    div[0].innerHTML = i
+    div[1].id = "showing_category_" + i
+    div[2].id = "showing_entry_" + i
+    div[3].id = "showing_depth_" + i
+    div[4].id = "showing_val_" + i
+    showing_template.parentNode.appendChild(clone)
+}
+
 
 BudgetObj = {    
                 "rest" : 0,
@@ -73,6 +87,7 @@ function saveBudget() {
     
     let BudgetJSON = JSON.stringify(BudgetObj)
     localStorage.setItem("budget.json", BudgetJSON)
+    loadBudget()
 };
 
 function saveBudget_confirm(){
@@ -87,14 +102,24 @@ function loadBudget(){
 };
 
 function showBudget(){    
-    for (var i in BudgetObj.entry) 
+    for (var i=0; i<BudgetObj.entry_number; i++) 
             for (var column in BudgetObj.entry[i]) 
-                if (!(typeof BudgetObj.entry[i][column] === "function"))
+                if (!(typeof BudgetObj.entry[i][column] === "function")) 
                     document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
+                    
+
+    for (var i=0; i<BudgetObj.entry_number; i++) 
+            for (var j in SHOWING_TABLE_COLUMNS) {
+                var id = "showing_" + SHOWING_TABLE_COLUMNS[j] + "_" + i
+                document.getElementById(id).innerHTML = BudgetObj.entry[i][SHOWING_TABLE_COLUMNS[j]]
+            }    
+    
 };
 
 function addIncomeButton() {
     saveBudget()
+    if (isNaN(parseFloat(document.getElementById("income").value)))
+        document.getElementById("income").value = 0;
     addIncome(parseFloat(document.getElementById("income").value))
 };
 
