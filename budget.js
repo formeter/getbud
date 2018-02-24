@@ -1,5 +1,6 @@
 const N_ENTRIES = 20;
 const SHOWING_TABLE_COLUMNS = ["category", "entry", "depth", "val"];
+const EDITING_TABLE_COLUMNS = ["imp", "category", "entry", "depth", "type", "val"];
 //Making a table HTML
 var template = document.querySelector('#editing_table_tmplt')
 for (var i=0; i<N_ENTRIES; i++) {
@@ -49,7 +50,7 @@ function fillEntry(income) {
     var add_val = 0;
     
     if (this.type === "%") 
-        add_val = income * this.depth / 100;
+        add_val = Math.min((income * this.depth / 100), income); //Quiet check for not more than 100%
     else
         if (!(this.isFull())) 
             add_val = Math.min(income, (this.depth - this.val));
@@ -115,13 +116,17 @@ function showBudget(){
             + "  <button type=\"button\" onclick=\"deleteRest()\">delete</button>"
     else document.getElementById("rest").innerHTML = ""
     
-    //Editing Table
-    for (var i=0; i<BudgetObj.entry_number; i++) 
-            for (var column in BudgetObj.entry[i]) 
-                if (!(typeof BudgetObj.entry[i][column] === "function")) 
-                    document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
-                    
-    //Showing Table
+    //The Editing Table
+    for (var i=0; i<BudgetObj.entry_number; i++) {
+            var entry = BudgetObj.entry[i];
+            for (var j in EDITING_TABLE_COLUMNS) { 
+                var column = EDITING_TABLE_COLUMNS[j]
+                var id = column + "_" + i
+                document.getElementById(id).value = entry[column]
+            }
+    }
+    
+    //The Showing Table
     for (var i=0; i<BudgetObj.entry_number; i++) {
             var entry = BudgetObj.entry[i];
             for (var j in SHOWING_TABLE_COLUMNS) {
@@ -171,6 +176,7 @@ for (var i=0; i<BudgetObj.entry_number; i++) {
 
 function spendButton(){
     saveBudget()
+    var overspent = false;
     for (var i=0; i<BudgetObj.entry_number; i++) {
         var entry = BudgetObj.entry[i];
         var spending = parseFloat(document.getElementById("showing_spend_" + i).value);
@@ -178,7 +184,7 @@ function spendButton(){
         if (isNaN(spending))
             spending = 0;
         document.getElementById("val_" + i).value -= spending;
-        if (document.getElementById("val_" + i).value < 0)
+        if ((document.getElementById("val_" + i).value < 0) && (spending > 0))
             overspent = true;
     }
     saveBudget()
@@ -187,11 +193,21 @@ function spendButton(){
 };
 
 function deleteRest() {
-//    alert(7)
     BudgetObj.rest = 0;
     saveBudget()
-//    loadBudget()
     showBudget()
+}
+
+function clearEditingTable() {
+    saveBudget()
+    for (var i=0; i<BudgetObj.entry_number; i++) {
+            var entry = BudgetObj.entry[i];
+            for (var j in EDITING_TABLE_COLUMNS) {
+                var id = EDITING_TABLE_COLUMNS[j] + "_" + i
+                if (EDITING_TABLE_COLUMNS[j] != "imp")
+                    document.getElementById(id).value = ""
+            }
+    }
 }
 
 
