@@ -1,28 +1,4 @@
 const N_ENTRIES = 20;
-BudgetObj = {    
-                "temp_val" : 0,
-                "entry_number" : 0,
-                "entry" : [ ]
-                // 
-                };
-
-function isFull() {
-    var val = parseFloat(this.val);
-    var depth = parseFloat(this.depth);
-    return (val >= depth) && (this.type !== "%");
-}
-
-function EntryObj() {
-                this.imp = null;
-                this.category = null;
-                this.entry = null;
-                this.depth = null;
-                this.type = null;
-                this.val = null;
-           };
-
-
-
 //Making a table HTML
 var template = document.querySelector('#raw_tmplt')
 for (var i=0; i<N_ENTRIES; i++) {
@@ -39,12 +15,45 @@ for (var i=0; i<N_ENTRIES; i++) {
     select[0].id = "type_" + i
     template.parentNode.appendChild(clone)
 }
+document.getElementById("income").value = 0;
 
+BudgetObj = {    
+                "rest" : 0,
+                "entry_number" : 0,
+                "entry" : [ ]
+            };
 
-function saveBudget() {    
+function isFull() {
+    return (this.val >= this.depth) && (this.type !== "%");
+}
+
+function fillEntry(income) {
+    var add_val = 0;
     
-   // alert(JSON.stringify(BudgetObj.entry[0]))
+    if (this.type === "%") 
+        add_val = income * this.depth / 100;
+    else
+        if (!(this.isFull())) 
+            add_val = Math.min(income, (this.depth - this.val));
     
+    if (this.isFull() && (this.type === "once")) 
+        this.depth = 0;
+  
+    this.val += add_val;
+    this.val = Math.round(this.val)
+    return (income - add_val);
+}
+
+function EntryObj() {
+                this.imp = null; //Not in use now
+                this.category = null;
+                this.entry = null;
+                this.depth = null;
+                this.type = null;
+                this.val = null;
+           };
+
+function saveBudget() {     
     BudgetObj.entry_number = 0;
     
     for (let i=0; i<N_ENTRIES; i++){ 
@@ -57,49 +66,61 @@ function saveBudget() {
                entry[column] = document.getElementById(column + "_" + i).value 
         }
         
-       // if (EntryObj.imp != "")
+       // if (EntryObj.imp != "") {
         BudgetObj.entry[i] = entry;
         BudgetObj.entry_number++;
-        //alert(JSON.stringify(BudgetObj.entry[i]))
-       
     }
     
-    //alert(BudgetObj.entry_number)
-    //alert(JSON.stringify(BudgetObj.entry[0].isFull())) 
-    //alert(JSON.stringify(BudgetObj))
     let BudgetJSON = JSON.stringify(BudgetObj)
     localStorage.setItem("budget.json", BudgetJSON)
-}
+};
 
 function saveBudget_confirm(){
     if (confirm("Are you sure? This will rewright database"))
         saveBudget();
-}
+};
 
 function loadBudget(){
     let BudgetJSON = localStorage.getItem("budget.json");
     BudgetObj = JSON.parse(BudgetJSON);
-    
-    //alert(JSON.stringify(BudgetObj))
-     
-    for (var i in BudgetObj.entry) {
-        for (var column in BudgetObj.entry[i]) {
-            document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
-        }
-    }
-    //alert(JSON.stringify(BudgetObj.entry[0].isFull()))
-}
+    showBudget()
+};
 
+function showBudget(){    
+    for (var i in BudgetObj.entry) 
+            for (var column in BudgetObj.entry[i]) 
+                if (!(typeof BudgetObj.entry[i][column] === "function"))
+                    document.getElementById(column + "_" + i).value = BudgetObj.entry[i][column]
+};
 
-function addIncome(){
-    for (var i=0; i<BudgetObj.entry_number; i++) {
-//    for (var i=0; i<1; i++) {
+function addIncomeButton() {
+    saveBudget()
+    addIncome(parseFloat(document.getElementById("income").value))
+};
+
+function addIncome(income){
+    var rest = parseFloat(income) + BudgetObj.rest;
+for (var i=0; i<BudgetObj.entry_number; i++) {
         var entry = BudgetObj.entry[i];
+        entry.imp = parseFloat(entry.imp);        
+        entry.val = parseFloat(entry.val);
+        if (isNaN(entry.val)) 
+            entry.val = 0;
+        entry.depth = parseFloat(entry.depth);
+        if (isNaN(entry.depth)) 
+            entry.depth = 0;
+        
         entry.isFull = isFull;
+        entry.fillEntry = fillEntry;
         
-        
-        alert(entry.isFull())
-    }    
-}
+        rest = entry.fillEntry(rest); //Main evaluating operation
+    } 
+    BudgetObj.rest = rest;
+    if (rest > 0) 
+        alert("There are some funds rest!\n" + "rest = " + rest + "\nThey've been saved and will be added to next Income")
+    showBudget()
+};
+
+
 
 
